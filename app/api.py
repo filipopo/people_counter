@@ -15,7 +15,7 @@ model = CSRNet()
 # model = model.cuda()
 model = model.to(torch.device('cpu'))
 
-checkpoint = torch.load(join('..', 'dataset', 'PartBmodel_best.pth.tar'), weights_only=False)
+checkpoint = torch.load(join('..', 'dataset', 'PartBmodel_best.pth.tar'), weights_only=False, map_location=torch.device('cpu'))
 model.load_state_dict(checkpoint['state_dict'])
 
 app = FastAPI()
