@@ -5,7 +5,6 @@ from utils import save_checkpoint
 
 import torch
 import torch.nn as nn
-from torch.autograd import Variable
 from torchvision import transforms
 
 import argparse
@@ -72,7 +71,7 @@ def main():
         adjust_learning_rate(optimizer, epoch)
 
         train(train_list, model, criterion, optimizer, epoch)
-        prec1 = validate(val_list, model, criterion)
+        prec1 = validate(val_list, model)
 
         is_best = prec1 < best_prec1
         best_prec1 = min(prec1, best_prec1)
@@ -96,7 +95,7 @@ def train(train_list, model, criterion, optimizer, epoch):
     data_time = AverageMeter()
 
     train_loader = torch.utils.data.DataLoader(
-        dataset.listDataset(
+        dataset.ListDataset(
             train_list,
             shuffle=True,
             transform=transforms.Compose([
@@ -106,9 +105,10 @@ def train(train_list, model, criterion, optimizer, epoch):
             train=True,
             seen=model.seen,
             batch_size=args.batch_size,
-            num_workers=args.workers
+            num_workers=0
         ),
-        batch_size=args.batch_size
+        batch_size=args.batch_size,
+        num_workers=4
     )
 
     print('epoch %d, processed %d samples, lr %.10f' % (epoch, epoch * len(train_loader.dataset), args.lr))
@@ -120,12 +120,12 @@ def train(train_list, model, criterion, optimizer, epoch):
         data_time.update(time.time() - end)
 
         # img = img.cuda()
-        img = Variable(img)
+        img = torch.tensor(img)
         output = model(img)
 
         target = target.type(torch.FloatTensor).unsqueeze(0)
         # .cuda()
-        target = Variable(target)
+        target = torch.tensor(target)
 
         loss = criterion(output, target)
 
@@ -152,11 +152,11 @@ def train(train_list, model, criterion, optimizer, epoch):
             )
 
 
-def validate(val_list, model, criterion):
+def validate(val_list, model):
     print('begin test')
 
     test_loader = torch.utils.data.DataLoader(
-        dataset.listDataset(
+        dataset.ListDataset(
             val_list,
             shuffle=False,
             transform=transforms.Compose([
@@ -165,7 +165,8 @@ def validate(val_list, model, criterion):
             ]),
             train=False
         ),
-        batch_size=args.batch_size
+        batch_size=args.batch_size,
+        num_workers=0
     )
 
     model.eval()
@@ -173,7 +174,7 @@ def validate(val_list, model, criterion):
 
     for i, (img, target) in enumerate(test_loader):
         # img = img.cuda()
-        img = Variable(img)
+        img = torch.tensor(img)
         output = model(img)
 
         # mae += abs(output.data.sum() - target.sum().type(torch.FloatTensor).cuda())

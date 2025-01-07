@@ -4,7 +4,7 @@ from image import load_data
 # import torchvision.transforms.functional as F
 
 
-class listDataset(Dataset):
+class ListDataset(Dataset):
     def __init__(self, root, shape=None, shuffle=True, transform=None,  train=False, seen=0, batch_size=1, num_workers=4):
         if train:
             root = root * 4
@@ -27,7 +27,7 @@ class listDataset(Dataset):
 
         img_path = self.lines[index]
 
-        img, target = load_data(img_path, self.train)
+        img, target = load_data(img_path)
 
         # img = 255.0 * F.to_tensor(img)
 

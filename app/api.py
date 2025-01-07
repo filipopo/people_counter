@@ -21,7 +21,7 @@ model.load_state_dict(checkpoint['state_dict'])
 app = FastAPI()
 
 
-def predictCount(image):
+def predict_count(image):
     img = transform(Image.open(image).convert('RGB'))  # .cuda()
     output = model(img.unsqueeze(0))
 
@@ -37,5 +37,5 @@ def read_root():
 def upload_file(image: UploadFile):
     return {
         'Image': image.filename,
-        'Predicted count': predictCount(image.file)
+        'Predicted count': predict_count(image.file)
     }

@@ -49,10 +49,12 @@ The application provides a REST API for predicting crowd counts in uploaded imag
   `python train.py ../dataset/part_A_train.json ../dataset/part_A_val.json`
 
   This should create PartAmodel_best.pth.tar and PartBmodel_best.pth.tar
+
+  Follow `val.ipynb` to try the validation
 </details>
 
 <details>
-  <summary>Running web app</summary>
+  <summary>Running the web app</summary>
 
   Perform these steps in the `app` folder
 
