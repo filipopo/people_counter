@@ -37,5 +37,5 @@ def read_root():
 def upload_file(image: UploadFile):
     return {
         'Image': image.filename,
-        'Predicted count: ': predictCount(image.file)
+        'Predicted count': predictCount(image.file)
     }

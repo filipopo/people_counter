@@ -162,3 +162,5 @@ cython_debug/
 #.idea/
 
 ground_truth
+PartAmodel_best.pth.tar
+PartBmodel_best.pth.tar

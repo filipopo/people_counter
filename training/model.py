@@ -1,6 +1,6 @@
-import torch
 import torch.nn as nn
 from torchvision.models import vgg16, VGG16_Weights
+
 
 class CSRNet(nn.Module):
     def __init__(self, load_weights=False):
@@ -16,10 +16,11 @@ class CSRNet(nn.Module):
         if not load_weights:
             mod = vgg16(weights=VGG16_Weights.IMAGENET1K_V1)
             self._initialize_weights()
+
             for i in range(len(self.frontend.state_dict().items())):
                 list(self.frontend.state_dict().items())[i][1].data[:] = list(mod.state_dict().items())[i][1].data[:]
 
-    def forward(self,x):
+    def forward(self, x):
         x = self.frontend(x)
         x = self.backend(x)
         x = self.output_layer(x)
@@ -35,9 +36,9 @@ class CSRNet(nn.Module):
             elif isinstance(m, nn.BatchNorm2d):
                 nn.init.constant_(m.weight, 1)
                 nn.init.constant_(m.bias, 0)
-            
-                
-def make_layers(cfg, in_channels = 3,batch_norm=False,dilation = False):
+
+
+def make_layers(cfg, in_channels=3, batch_norm=False, dilation=False):
     if dilation:
         d_rate = 2
     else:
